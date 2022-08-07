@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.27.2",
+    "link_smart_thing_directory": "github:mech0s/linksmart-node-client",
     "node-dns-sd": "^0.4.2"
   }
 }
