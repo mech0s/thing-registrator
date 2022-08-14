@@ -5,7 +5,7 @@ const axios = require('axios');
 let thingsLocation = new URL("http://localhost:8080/");
 // override with command line arg host=URL
 let customLocation = null;
-// test vale customLocation = new URL("http://192.168.86.30:8888/");
+// test value customLocation = new URL("http://192.168.86.30:8888/");
 if ( process.argv.length > 2) {
     console.log("Using custom base URL: ", process.argv[2].split('=')[1]);
     customLocation = new URL( process.argv[2].split('=')[1] )
@@ -55,8 +55,8 @@ function registerWithADirectory(tds) {
     mDnsSd.discover({
     name: '_wot._tcp.local'
     }).then((device_list) =>{
-    const directory = {};  // only one directory handled for now
-    device_list.forEach(element => {
+    const directory = {address:"127.0.0.1", port:8081};  
+    device_list.forEach(element => { // only one directory handled for now, defaults to 127.0.0.1:8081
         directory.address = element.address;
         directory.port = element.service.port; 
     });
