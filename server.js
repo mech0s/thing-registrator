@@ -5,7 +5,8 @@ const axios = require('axios');
 let thingsLocation = new URL("http://localhost:8080/");
 // override with command line arg host=URL
 let customLocation = null;
-// test value customLocation = new URL("http://192.168.86.30:8888/");
+// test value 
+customLocation = new URL("http://192.168.139.177:8888/");
 if ( process.argv.length > 2) {
     console.log("Using custom base URL: ", process.argv[2].split('=')[1]);
     customLocation = new URL( process.argv[2].split('=')[1] )
@@ -13,15 +14,23 @@ if ( process.argv.length > 2) {
 thingsLocation = customLocation ? customLocation : thingsLocation;
 
 const ipv4_regex = /^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/gm;   
-
+let originalHost;
+let customHost;
 axios.get(thingsLocation.toString())  //base url returns a list of TD urls
     .then((res) => {
         const requests = [];
+
         res.data.forEach(element=> {
-            var url = null;
-            try {url = new URL(element);} catch {}
-            if (url != null && ipv4_regex.test(url.hostname)) {
-                requests.push(axios.get(url.toString()));    // prepare requests or TD data at urls
+            let elementUrl; try { elementUrl = new URL(element) } catch {} // undefined if this exceptions
+            if ( elementUrl && ipv4_regex.test(elementUrl.hostname) ){ // well formed
+                originalHost = elementUrl.host;
+                if ( !customLocation ){
+                    customHost = originalHost;
+                } else
+                {
+                    customHost = customLocation.host;
+                }
+                requests.push(axios.get(element.replace(new RegExp(originalHost, 'g'), customHost)));    // prepare requests or TD data at urls
             }
         })
         axios.all(requests)                          // block on all reponse promises, awaiting responses
@@ -30,8 +39,8 @@ axios.get(thingsLocation.toString())  //base url returns a list of TD urls
             for ( var response of responses) {
                 if (!customLocation) tds.push( response.data)
                 else {
-                    let customHost = customLocation.host;
-                    let originalHost = new URL(response.config.url).host;
+                    //let customHost = customLocation.host;
+                    //let originalHost = new URL(response.config.url).host;
                     datastring = JSON.stringify(response.data)
                     tds.push ( JSON.parse(datastring.replace(new RegExp(originalHost, 'g'), customHost) ))
                 }
