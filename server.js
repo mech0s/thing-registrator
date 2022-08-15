@@ -6,7 +6,7 @@ let thingsLocation = new URL("http://localhost:8080/");
 // override with command line arg host=URL
 let customLocation = null;
 // test value 
-customLocation = new URL("http://192.168.139.177:8888/");
+// // customLocation = new URL("http://192.168.139.177:8888/");
 if ( process.argv.length > 2) {
     console.log("Using custom base URL: ", process.argv[2].split('=')[1]);
     customLocation = new URL( process.argv[2].split('=')[1] )
