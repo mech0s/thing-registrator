@@ -30,7 +30,7 @@ axios.get(thingsLocation.toString())  //base url returns a list of TD urls
                 {
                     customHost = customLocation.host;
                 }
-                requests.push(axios.get(element.replace(new RegExp(originalHost, 'g'), customHost)));    // prepare requests or TD data at urls
+                requests.push(axios.get(element.replace(new RegExp(originalHost, 'g'), customHost)));    // prepare requests for TD data at urls
             }
         })
         axios.all(requests)                          // block on all reponse promises, awaiting responses
