@@ -19,10 +19,12 @@ let customHost;
 axios.get(thingsLocation.toString())  //base url returns a list of TD urls
     .then((res) => {
         const requests = [];
-
         res.data.forEach(element=> {
-            let elementUrl; try { elementUrl = new URL(element) } catch {} // undefined if this exceptions
-            if ( elementUrl && ipv4_regex.test(elementUrl.hostname) ){ // well formed
+            console.log(JSON.stringify(element))
+            let elementUrl; try { elementUrl = new URL(element);} catch {} // undefined if this exceptions
+            let wellFormed  = ( elementUrl && ipv4_regex.test(elementUrl.hostname) );
+            ipv4_regex.lastIndex = 0; // test -> true retains the regex state, needs reset
+            if ( wellFormed ){ 
                 originalHost = elementUrl.host;
                 if ( !customLocation ){
                     customHost = originalHost;
